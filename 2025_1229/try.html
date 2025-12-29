@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio OS</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --bg-alt: #ffffff;
+      --text: #111827;
+      --subtitle: #4b5563;
+      --border: #d1d5db;
+      --icon-bg: linear-gradient(145deg,#e5e7eb,#f3f4f6);
+      --close-btn: #ef4444;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;transition:all .3s}
+    body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:var(--bg-alt);color:var(--text);padding:20px;font-family:'Plus Jakarta Sans', sans-serif;}
+
+    .computer{width:100%;max-width:1100px;background:var(--bg);border-radius:18px;box-shadow:0 40px 120px rgba(0,0,0,.3);padding:18px;transition:background .3s}
+    .top-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;transition:background .3s,border-color .3s}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .red{background:#ef4444}.yellow{background:#facc15}.green{background:#22c55e}
+
+    .screen{background:var(--bg);padding:24px;border-radius:0 0 14px 14px;position:relative;min-height:520px;transition:background .3s}
+
+    h1{font-family:'Poppins',sans-serif;font-weight:700;font-size:2rem;margin-bottom:8px;color:var(--text);}
+    .subtitle{color:var(--subtitle);margin-bottom:20px;font-style:italic;font-size:1rem;}
+
+    .desktop{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));grid-auto-rows:180px;gap:16px}
+    .icon{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+      cursor:pointer;
+      transition:.25s;
+      background:var(--icon-bg);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+      overflow:hidden;
+      font-family:'Plus Jakarta Sans',sans-serif;
+    }
+    .icon:hover{transform:translateY(-4px) rotate(-2deg);box-shadow:0 16px 30px rgba(0,0,0,.25);}
+    .icon span{display:block;margin-top:10px;font-size:.95rem;color:#111827;text-align:center;transition:color .3s}
+
+    .window{position:absolute;inset:40px;background:var(--bg);border:1px solid var(--border);border-radius:14px;display:none;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.25);transition:background .3s,border-color .3s}
+    .window.active{display:flex;animation:popIn .3s ease-out}
+    .window-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);transition:border-color .3s}
+    .window-content{padding:20px;overflow:auto;line-height:1.5;font-size:0.95rem;}
+
+    .close{margin-left:auto;background:var(--close-btn);border:none;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;transition:.2s}
+    .close:hover{background:#dc2626}
+
+    #themeToggle{position:absolute;top:12px;right:12px;padding:6px 12px;border-radius:8px;border:none;cursor:pointer;background:#f3f4f6;color:#111827;transition:all .3s;font-weight:600;}
+
+    @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+    @media(max-width:640px){.window{inset:10px}h1{font-size:1.5rem}}
+
+    /* Pre-entry modal styling */
+    #prePopup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+    }
+
+    #prePopupContent {
+      background: white; 
+      padding: 60px 80px; 
+      border-radius: 24px;
+      text-align: center;
+      max-width: 550px;
+      width: 90%;
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.35);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #141414; 
+      transform: scale(0.8);
+      animation: popIn 0.4s forwards 0.2s;
+    }
+
+    #prePopupContent h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400; /* Regular weight, not bold */
+      font-size: 2.5rem; 
+      margin-bottom: 30px;
+      line-height: 1.2;
+      color: #141414;
+    }
+
+    #enterBtn {
+      padding: 16px 40px;
+      border: none;
+      border-radius: 18px;
+      background: #4f46e5;
+      color: white;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 700;
+      transition: all 0.25s;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: buttonPop 0.4s forwards 0.6s;
+    }
+
+    #enterBtn:hover { 
+      background: #6366f1; 
+      transform: scale(1.05); 
+    }
+
+    @keyframes fadeIn { 0% {opacity:0} 100% {opacity:1} }
+    @keyframes buttonPop { 0% {opacity:0; transform:translateY(10px);} 100% {opacity:1; transform:translateY(0);} }
+  </style>
+</head>
+<body>
+
+<!-- Pre-entry Modal -->
+<div id="prePopup">
+  <div id="prePopupContent">
+    <h2>Let's work together!</h2>
+    <button id="enterBtn">OK</button>
+  </div>
+</div>
+
+<div class="computer">
+  <div class="top-bar">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+  </div>
+
+  <button id="themeToggle">🌙</button>
+
+  <div class="screen">
+    <h1>I'm Jerrica, at your service!</h1>
+    <p class="subtitle">Relax, Sit Back, and Let Me Handle Your Websites & Pages – I’ve Got You</p>
+
+    <div class="desktop">
+      <div class="icon" style="grid-column:span 2;grid-row:span 1;" onclick="openWin('about')">📁<span>Who Am I?</span></div>
+      <div class="icon" style="grid-column:span 1;grid-row:span 1;" onclick="openWin('services')">🛠️<span>Magic I Do</span></div>
+      <div class="icon" style="grid-column:span 1;grid-row:span 2;" onclick="openWin('projects')">💻<span>My Digital Playground</span></div>
+      <div class="icon" style="grid-column:span 2;grid-row:span 1;" onclick="openWin('contact')">✉️<span>Say Hi!</span></div>
+      <div class="icon" onclick="window.open('https://www.linkedin.com/in/yourprofile1', '_blank')">in<span>LinkedIn 1</span></div>
+      <div class="icon" onclick="window.open('https://www.linkedin.com/in/yourprofile2', '_blank')">in<span>LinkedIn 2</span></div>
+      <div class="icon" onclick="window.open('https://www.linkedin.com/in/yourprofile3', '_blank')">in<span>LinkedIn 3</span></div>
+      <div class="icon" style="grid-column:span 2; grid-row:span 1; border:none; padding:0; background:none;">
+        <img id="mainPic" src="light-image.jpg" alt="profile" style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
+      </div>
+    </div>
+
+    <div class="window" id="about">
+      <div class="window-bar"><strong>About Me</strong><button class="close" onclick="closeWin('about')">Close</button></div>
+      <div class="window-content">
+        <p>I’m your friendly Virtual Assistant & Web Support, helping businesses surf the internet without wiping out. Think of me as your digital sidekick with a flair for organization and a pinch of quirkiness.</p>
+      </div>
+    </div>
+
+    <div class="window" id="services">
+      <div class="window-bar"><strong>Services</strong><button class="close" onclick="closeWin('services')">Close</button></div>
+      <div class="window-content">
+        <ul>
+          <li>Website & page setup — turning chaos into clean layouts</li>
+          <li>Basic front-end support — because pixels matter</li>
+          <li>Social Media Management — I post, you shine</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="window" id="projects">
+      <div class="window-bar"><strong>Projects</strong><button class="close" onclick="closeWin('projects')">Close</button></div>
+      <div class="window-content">
+        <p>Peek into my digital playground: quirky web layouts, tiny hacks, and cool snippets that make life easier for clients.</p>
+      </div>
+    </div>
+
+    <div class="window" id="contact">
+      <div class="window-bar"><strong>Contact</strong><button class="close" onclick="closeWin('contact')">Close</button></div>
+      <div class="window-content">
+        <p>Drop me a line! I promise I don’t bite. Well… except for digital bugs</p>
+        <p>Email: yourname@email.com</p>
+        <p>GitHub / LinkedIn links here</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openWin(id){document.getElementById(id).classList.add('active')}
+  function closeWin(id){document.getElementById(id).classList.remove('active')}
+
+  const toggle = document.getElementById('themeToggle');
+  let darkMode = false;
+  const mainPic = document.getElementById('mainPic');
+
+  toggle.addEventListener('click', () => {
+    if(!darkMode){
+      document.documentElement.style.setProperty('--bg', '#020617');
+      document.documentElement.style.setProperty('--bg-alt', '#0f172a');
+      document.documentElement.style.setProperty('--text', '#e5e7eb');
+      document.documentElement.style.setProperty('--subtitle', '#94a3b8');
+      document.documentElement.style.setProperty('--border', '#1e293b');
+      document.documentElement.style.setProperty('--icon-bg', 'linear-gradient(145deg,#0f172a,#111827)');
+      mainPic.src = 'dark-image.jpg';
+      toggle.textContent = '💡';
+      darkMode = true;
+    } else {
+      document.documentElement.style.setProperty('--bg', '#f9fafb');
+      document.documentElement.style.setProperty('--bg-alt', '#ffffff');
+      document.documentElement.style.setProperty('--text', '#111827');
+      document.documentElement.style.setProperty('--subtitle', '#4b5563');
+      document.documentElement.style.setProperty('--border', '#d1d5db');
+      document.documentElement.style.setProperty('--icon-bg', 'linear-gradient(145deg,#e5e7eb,#f3f4f6)');
+      mainPic.src = 'light-image.jpg';
+      toggle.textContent = '🌙';
+      darkMode = false;
+    }
+  });
+
+  const prePopup = document.getElementById('prePopup');
+  const enterBtn = document.getElementById('enterBtn');
+
+  enterBtn.addEventListener('click', () => {
+    prePopup.style.opacity = 0;
+    setTimeout(()=>{ prePopup.style.display='none'; }, 400);
+  });
+</script>
+
+</body>
+</html>
